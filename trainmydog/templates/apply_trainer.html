@@ -1,0 +1,103 @@
+{# templates/apply_trainer.html #}
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}ยื่นคำขอเป็นผู้ฝึก • Train My Dog{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto px-4 py-8 md:py-10">
+
+  <h1 class="text-2xl font-bold mb-4">ยื่นคำขอเป็นผู้ฝึก</h1>
+
+  {# แสดง system messages #}
+  {% if messages %}
+    <div class="space-y-2 mb-4">
+      {% for message in messages %}
+        <div class="px-3 py-2 rounded border
+                    {% if 'success' in message.tags %}border-green-300 bg-green-50 text-green-700
+                    {% elif 'warning' in message.tags or 'info' in message.tags %}border-amber-300 bg-amber-50 text-amber-800
+                    {% else %}border-red-300 bg-red-50 text-red-700{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {# แจ้งเหตุผลถ้าห้ามส่งซ้ำ #}
+  {% if block_resubmit and block_message %}
+    <div class="mb-4 px-3 py-2 rounded border border-amber-300 bg-amber-50 text-amber-800">
+      {{ block_message }}
+    </div>
+  {% endif %}
+
+  <form method="post" enctype="multipart/form-data"
+        class="bg-white rounded-xl shadow p-4 md:p-5 space-y-4 ring-1 ring-slate-200">
+    {% csrf_token %}
+
+    <fieldset {% if block_resubmit %}disabled{% endif %} class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium mb-1">ชื่อ-นามสกุล</label>
+        {{ form.full_name }}
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">อายุ</label>
+          {{ form.age }}
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">เพศ</label>
+          {{ form.gender }}
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">เบอร์โทร</label>
+        {{ form.phone }}
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">อีเมล</label>
+        {{ form.email_snapshot }}
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">แนะนำตัว/เพิ่มเติม</label>
+        {{ form.intro }}
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">ลิงก์ผลงาน (ถ้ามี)</label>
+        {{ form.portfolio_link }}
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">แนบไฟล์เกียรติบัตร/ผลงาน (ไฟล์เดียว)</label>
+        {{ form.certificate }}
+        <p class="text-xs text-slate-500 mt-1">รองรับ PDF หรือรูปภาพ 1 ไฟล์</p>
+      </div>
+    </fieldset>
+
+    <div class="flex items-center gap-3 pt-2">
+      <a href="{% url 'Authen:home' %}" class="px-4 py-2 rounded border border-slate-300 hover:bg-slate-50">ยกเลิก</a>
+      <button class="px-4 py-2 rounded text-white
+                     {% if block_resubmit %}bg-slate-400 cursor-not-allowed{% else %}bg-indigo-600 hover:bg-indigo-500{% endif %}"
+              {% if block_resubmit %}disabled aria-disabled="true"{% endif %}>
+        ส่งคำขอ
+      </button>
+    </div>
+  </form>
+
+  {% if latest %}
+    <div class="mt-6 text-sm text-slate-600">
+      สถานะคำขอล่าสุดของคุณ: <b>{{ latest.get_status_display }}</b>
+    </div>
+  {% endif %}
+
+  {# ลิงก์อื่น ๆ ถ้ายังไม่มีหน้า ให้ติด # ไว้ก่อน #}
+  <div class="mt-6 text-sm text-slate-500">
+    <a href="#" class="underline hover:text-slate-700">นโยบายผู้ฝึก</a> ·
+    <a href="#" class="underline hover:text-slate-700">คำถามที่พบบ่อย</a>
+  </div>
+</div>
+{% endblock %}

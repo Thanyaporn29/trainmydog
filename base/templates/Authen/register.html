@@ -1,0 +1,85 @@
+{# register.html #}
+{% extends "base.html" %}
+{% load static %}
+{% block title %}สมัครสมาชิก • Train My Dog{% endblock %}
+
+{# ซ่อน Header/Footer และใช้พื้นหลังเทาอ่อน เหมือนหน้า Login #}
+{% block body_class %}no-navbar-page bg-slate-50{% endblock %}
+{% block main_class %}w-full h-screen{% endblock %}
+
+{% block content %}
+<!-- กรอบเต็มหน้าจอ + การ์ดอยู่กึ่งกลาง -->
+<div class="h-screen w-screen flex items-center justify-center px-6">
+  <div class="bg-white p-6 rounded-2xl shadow w-full max-w-md">
+    <h1 class="text-2xl font-bold text-center">
+      ยินดีต้อนรับสู่ <span class="text-green-600">TrainMyDog</span>
+    </h1>
+    <h2 class="mt-2 text-center text-lg font-semibold">สมัครสมาชิก</h2>
+
+    {% if form.non_field_errors %}
+      <div class="mt-3 text-red-600 text-sm text-center">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <form method="post" class="mt-5 space-y-4" novalidate>
+      {% csrf_token %}
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm mb-1">ชื่อ</label>
+          {{ form.first_name }}
+          {% for e in form.first_name.errors %}<p class="text-red-600 text-sm">{{ e }}</p>{% endfor %}
+        </div>
+        <div>
+          <label class="block text-sm mb-1">นามสกุล</label>
+          {{ form.last_name }}
+          {% for e in form.last_name.errors %}<p class="text-red-600 text-sm">{{ e }}</p>{% endfor %}
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm mb-1">อีเมล</label>
+        {{ form.email }}
+        {% for e in form.email.errors %}<p class="text-red-600 text-sm">{{ e }}</p>{% endfor %}
+      </div>
+
+      <div class="relative">
+        <label class="block text-sm mb-1">รหัสผ่าน</label>
+        {{ form.password1 }}
+        <button type="button" onclick="toggle('id_password1')" class="absolute right-3 bottom-3 text-sm"></button>
+        {% for e in form.password1.errors %}<p class="text-red-600 text-sm">{{ e }}</p>{% endfor %}
+      </div>
+
+      <div class="relative">
+        <label class="block text-sm mb-1">ยืนยันรหัสผ่าน</label>
+        {{ form.password2 }}
+        <button type="button" onclick="toggle('id_password2')" class="absolute right-3 bottom-3 text-sm"></button>
+        {% for e in form.password2.errors %}<p class="text-red-600 text-sm">{{ e }}</p>{% endfor %}
+      </div>
+
+      <button class="w-full py-2.5 rounded-lg bg-blue-600 text-white font-semibold">สมัครสมาชิก</button>
+    </form>
+
+    <p class="mt-4 text-center text-sm">
+      มีบัญชีอยู่แล้วใช่ไหม ?
+      <a class="text-blue-600 hover:underline" href="{% url 'Authen:login' %}">เข้าสู่ระบบ</a>
+    </p>
+  </div>
+</div>
+
+<script>
+  function toggle(id){
+    const el = document.getElementById(id);
+    if (el) el.type = el.type === 'password' ? 'text' : 'password';
+  }
+</script>
+
+<style>
+  input {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: .5rem;
+    padding: .6rem .75rem;
+    background: white;
+  }
+</style>
+{% endblock %}
